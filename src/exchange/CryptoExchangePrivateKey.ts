@@ -3,7 +3,6 @@ import { CoreBuffer, IClearable, ICoreBuffer } from "../CoreBuffer";
 import { CryptoError } from "../CryptoError";
 import { CryptoErrorCode } from "../CryptoErrorCode";
 import { CryptoPrivateKey } from "../CryptoPrivateKey";
-import { SodiumWrapper } from "../SodiumWrapper";
 import { CryptoExchangeAlgorithm } from "./CryptoExchange";
 import { CryptoExchangePublicKey } from "./CryptoExchangePublicKey";
 import { CryptoExchangeValidation } from "./CryptoExchangeValidation";
@@ -45,23 +44,7 @@ export class CryptoExchangePrivateKey extends CryptoPrivateKey implements ICrypt
     }
 
     public async toPublicKey(): Promise<CryptoExchangePublicKey> {
-        let publicKey: Uint8Array;
-        switch (this.algorithm) {
-            case CryptoExchangeAlgorithm.ECDH_X25519:
-                try {
-                    publicKey = (await SodiumWrapper.ready()).crypto_scalarmult_base(this.privateKey.buffer);
-                } catch (e) {
-                    throw new CryptoError(CryptoErrorCode.ExchangeKeyGeneration, `${e}`);
-                }
-                break;
-            default:
-                throw new CryptoError(CryptoErrorCode.NotYetImplemented);
-        }
-
-        return CryptoExchangePublicKey.from({
-            algorithm: this.algorithm,
-            publicKey: CoreBuffer.from(publicKey)
-        });
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     public static override from(value: CryptoExchangePrivateKey | ICryptoExchangePrivateKey): CryptoExchangePrivateKey {

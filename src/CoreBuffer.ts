@@ -3,7 +3,6 @@ import { ISerializable, Serializable, type } from "@js-soft/ts-serval";
 import { BaseX } from "./BaseX";
 import { CryptoError } from "./CryptoError";
 import { CryptoErrorCode } from "./CryptoErrorCode";
-import { SodiumWrapper } from "./SodiumWrapper";
 
 /**
  * Supported string encoding types.
@@ -117,34 +116,27 @@ export class CoreBuffer extends Serializable implements ICoreBuffer {
     }
 
     private bufferToHex(): string {
-        return SodiumWrapper.sodium.to_hex(this._buffer);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private bufferToBase64(): string {
-        const sodium = SodiumWrapper.sodium as any;
-        return sodium.to_base64(this._buffer, sodium.base64_variants.ORIGINAL);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private bufferToBase64NoPadding(): string {
-        const sodium = SodiumWrapper.sodium as any;
-        return sodium.to_base64(this._buffer, sodium.base64_variants.ORIGINAL_NO_PADDING);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private bufferToBase64URL(): string {
-        const sodium = SodiumWrapper.sodium as any;
-        return sodium.to_base64(this._buffer, sodium.base64_variants.URLSAFE_NO_PADDING);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private bufferToAscii(): string {
-        return Array.prototype.map
-            .call(this._buffer, function (byte: any) {
-                return String.fromCharCode(byte % 128);
-            })
-            .join("");
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private bufferToUTF8(): string {
-        return SodiumWrapper.sodium.to_string(this._buffer);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private bufferToPem(label?: string) {
@@ -182,7 +174,7 @@ export class CoreBuffer extends Serializable implements ICoreBuffer {
     }
 
     public clear(): this {
-        SodiumWrapper.sodium.memzero(this.buffer);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
         return this;
     }
 
@@ -260,9 +252,9 @@ export class CoreBuffer extends Serializable implements ICoreBuffer {
         counterBufferCorrectLength.set(counterBuffer, this.buffer.byteLength - counterBuffer.byteLength);
 
         const sum = this.buffer;
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
         try {
             // Sum up both arrays
-            SodiumWrapper.sodium.add(sum, counterBufferCorrectLength);
         } catch (e) {
             throw new CryptoError(CryptoErrorCode.BufferAdd, `${e}`);
         } finally {
@@ -284,8 +276,7 @@ export class CoreBuffer extends Serializable implements ICoreBuffer {
     }
 
     private static hexToBuffer(hex: string): CoreBuffer {
-        const result = SodiumWrapper.sodium.from_hex(hex);
-        return new CoreBuffer(result);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private static latin1ToBuffer(str: string): CoreBuffer {
@@ -305,25 +296,19 @@ export class CoreBuffer extends Serializable implements ICoreBuffer {
     }
 
     private static base64ToBuffer(base64: string): CoreBuffer {
-        const sodium = SodiumWrapper.sodium as any;
-        const binary = sodium.from_base64(base64, sodium.base64_variants.ORIGINAL);
-        return new CoreBuffer(binary);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private static base64NoPaddingToBuffer(base64: string): CoreBuffer {
-        const sodium = SodiumWrapper.sodium as any;
-        const binary = sodium.from_base64(base64, sodium.base64_variants.ORIGINAL_NO_PADDING);
-        return new CoreBuffer(binary);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private static urlSafeBase64WithNoPaddingToBuffer(base64: string): CoreBuffer {
-        const sodium = SodiumWrapper.sodium as any;
-        const binary = sodium.from_base64(base64, sodium.base64_variants.URLSAFE_NO_PADDING);
-        return new CoreBuffer(binary);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private static utf8ToBuffer(utf8: string): CoreBuffer {
-        return new CoreBuffer(SodiumWrapper.sodium.from_string(utf8));
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private static pemToBuffer(pem: string): CoreBuffer {
@@ -412,7 +397,6 @@ export class CoreBuffer extends Serializable implements ICoreBuffer {
     }
 
     public static random(length: number): CoreBuffer {
-        const sodium = SodiumWrapper.sodium as any;
-        return new CoreBuffer(sodium.randombytes_buf(length));
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 }

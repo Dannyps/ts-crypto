@@ -1,5 +1,5 @@
+import { CryptoError, CryptoErrorCode } from "..";
 import { CoreBuffer, Encoding, ICoreBuffer } from "../CoreBuffer";
-import { SodiumWrapper } from "../SodiumWrapper";
 
 /**
  * The hash algorithm to use
@@ -56,13 +56,13 @@ export class CryptoHash implements ICryptoHash {
      */
     public static async hash(content: ICoreBuffer, algorithm: CryptoHashAlgorithm): Promise<CoreBuffer> {
         let hashBuffer: Uint8Array;
-        const sodium = await SodiumWrapper.ready();
+
         switch (algorithm) {
             case CryptoHashAlgorithm.SHA256:
-                hashBuffer = sodium.crypto_hash_sha256(content.buffer);
+                throw new CryptoError(CryptoErrorCode.NotYetImplemented);
                 break;
             case CryptoHashAlgorithm.SHA512:
-                hashBuffer = sodium.crypto_hash_sha512(content.buffer);
+                throw new CryptoError(CryptoErrorCode.NotYetImplemented);
                 break;
             default:
                 throw new Error("This hash algorithm is not supported.");

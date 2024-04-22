@@ -2,7 +2,6 @@ import { CoreBuffer } from "../CoreBuffer";
 import { CryptoError } from "../CryptoError";
 import { CryptoErrorCode } from "../CryptoErrorCode";
 import { CryptoHashAlgorithm } from "../hash/CryptoHash";
-import { SodiumWrapper } from "../SodiumWrapper";
 import { CryptoSignature } from "./CryptoSignature";
 import { CryptoSignatureAlgorithm } from "./CryptoSignatureAlgorithm";
 import { CryptoSignatureKeypair } from "./CryptoSignatureKeypair";
@@ -16,17 +15,7 @@ export class CryptoSignatures {
     ): Promise<CryptoSignaturePublicKey> {
         switch (privateKey.algorithm) {
             case CryptoSignatureAlgorithm.ECDSA_ED25519:
-                try {
-                    const publicKey = (await SodiumWrapper.ready()).crypto_sign_ed25519_sk_to_pk(
-                        privateKey.privateKey.buffer
-                    );
-                    return CryptoSignaturePublicKey.from({
-                        algorithm: privateKey.algorithm,
-                        publicKey: CoreBuffer.from(publicKey)
-                    });
-                } catch (e) {
-                    throw new CryptoError(CryptoErrorCode.SignatureKeyGeneration, `${e}`);
-                }
+                throw new CryptoError(CryptoErrorCode.NotYetImplemented);
             default:
                 throw new CryptoError(CryptoErrorCode.NotYetImplemented);
         }
@@ -44,11 +33,7 @@ export class CryptoSignatures {
         let pair;
         switch (algorithm) {
             case CryptoSignatureAlgorithm.ECDSA_ED25519:
-                try {
-                    pair = (await SodiumWrapper.ready()).crypto_sign_keypair();
-                } catch (e) {
-                    throw new CryptoError(CryptoErrorCode.SignatureKeyGeneration, `${e}`);
-                }
+                throw new CryptoError(CryptoErrorCode.NotYetImplemented);
                 break;
             default:
                 throw new CryptoError(CryptoErrorCode.NotYetImplemented);
@@ -70,36 +55,12 @@ export class CryptoSignatures {
     ): Promise<CryptoSignature> {
         CryptoSignatureValidation.checkBuffer(content, 1);
         CryptoSignatureValidation.checkHashAlgorithm(algorithm);
-
-        const privateKeyBuffer = this.getArrayOfPrivateKey(privateKey);
-
         try {
-            const signatureArray = (await SodiumWrapper.ready()).crypto_sign_detached(content.buffer, privateKeyBuffer);
-
-            const signatureBuffer: CoreBuffer = new CoreBuffer(signatureArray);
-            const signature = CryptoSignature.from({ signature: signatureBuffer, algorithm, keyId, id });
-            return signature;
+            throw new CryptoError(CryptoErrorCode.NotYetImplemented);
         } catch (e) {
             const error = new CryptoError(CryptoErrorCode.SignatureSign, `${e}`);
             throw error;
         }
-    }
-
-    private static getArrayOfPrivateKey(privateKey: CryptoSignaturePrivateKey | CoreBuffer): Uint8Array {
-        let buffer: CoreBuffer;
-        if (privateKey instanceof CryptoSignaturePrivateKey) {
-            buffer = privateKey.privateKey;
-        } else if (privateKey instanceof CoreBuffer) {
-            buffer = privateKey;
-        } else {
-            throw new CryptoError(
-                CryptoErrorCode.SignatureWrongPrivateKey,
-                "The given private key must be of type CryptoSignaturePrivateKey or CoreBuffer."
-            );
-        }
-        CryptoSignatureValidation.checkBuffer(buffer);
-
-        return buffer.buffer;
     }
 
     public static async verify(
@@ -107,22 +68,7 @@ export class CryptoSignatures {
         signature: CryptoSignature,
         publicKey: CryptoSignaturePublicKey | CoreBuffer
     ): Promise<boolean> {
-        CryptoSignatureValidation.checkBuffer(content, 1);
-
-        const publicKeyBuffer = this.getArrayOfPublicKey(publicKey);
-
-        try {
-            const valid = (await SodiumWrapper.ready()).crypto_sign_verify_detached(
-                signature.signature.buffer,
-                content.buffer,
-                publicKeyBuffer
-            );
-
-            return valid;
-        } catch (e) {
-            const error = new CryptoError(CryptoErrorCode.SignatureVerify, `${e}`);
-            throw error;
-        }
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     private static getArrayOfPublicKey(publicKey: CryptoSignaturePublicKey | CoreBuffer): Uint8Array {

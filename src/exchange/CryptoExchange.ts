@@ -1,10 +1,7 @@
-import { CoreBuffer } from "../CoreBuffer";
 import { CryptoError } from "../CryptoError";
 import { CryptoErrorCode } from "../CryptoErrorCode";
 import { CryptoEncryptionAlgorithm } from "../encryption/CryptoEncryption";
-import { SodiumWrapper } from "../SodiumWrapper";
 import { CryptoExchangeKeypair } from "./CryptoExchangeKeypair";
-import { CryptoExchangePrivateKey } from "./CryptoExchangePrivateKey";
 import { CryptoExchangePublicKey } from "./CryptoExchangePublicKey";
 import { CryptoExchangeSecrets } from "./CryptoExchangeSecrets";
 
@@ -27,29 +24,7 @@ export class CryptoExchange {
     public static async generateKeypair(
         algorithm: CryptoExchangeAlgorithm = CryptoExchangeAlgorithm.ECDH_X25519
     ): Promise<CryptoExchangeKeypair> {
-        let privateKeyBuffer;
-        let publicKeyBuffer;
-
-        switch (algorithm as number) {
-            case CryptoExchangeAlgorithm.ECDH_X25519:
-                let pair;
-                try {
-                    pair = (await SodiumWrapper.ready()).crypto_kx_keypair();
-                } catch (e: any) {
-                    throw new CryptoError(CryptoErrorCode.ExchangeKeyGeneration, `${e}`);
-                }
-                privateKeyBuffer = pair.privateKey;
-                publicKeyBuffer = pair.publicKey;
-                break;
-            default:
-                throw new CryptoError(CryptoErrorCode.NotYetImplemented);
-        }
-
-        const privateKey = CryptoExchangePrivateKey.from({ algorithm, privateKey: CoreBuffer.from(privateKeyBuffer) });
-        const publicKey = CryptoExchangePublicKey.from({ algorithm, publicKey: CoreBuffer.from(publicKeyBuffer) });
-        const keypair = CryptoExchangeKeypair.from({ publicKey, privateKey });
-
-        return keypair;
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     /**
@@ -73,23 +48,7 @@ export class CryptoExchange {
         templatorPublicKey: CryptoExchangePublicKey,
         algorithm: CryptoEncryptionAlgorithm = CryptoEncryptionAlgorithm.XCHACHA20_POLY1305
     ): Promise<CryptoExchangeSecrets> {
-        let sharedKey;
-        try {
-            sharedKey = (await SodiumWrapper.ready()).crypto_kx_server_session_keys(
-                requestorKeypair.publicKey.publicKey.buffer,
-                requestorKeypair.privateKey.privateKey.buffer,
-                templatorPublicKey.publicKey.buffer
-            );
-        } catch (e: any) {
-            throw new CryptoError(CryptoErrorCode.ExchangeKeyDerivation, `${e}`);
-        }
-
-        const secrets = CryptoExchangeSecrets.from({
-            receivingKey: CoreBuffer.from(sharedKey.sharedRx),
-            transmissionKey: CoreBuffer.from(sharedKey.sharedTx),
-            algorithm: algorithm
-        });
-        return secrets;
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     /**
@@ -113,22 +72,6 @@ export class CryptoExchange {
         requestorPublicKey: CryptoExchangePublicKey,
         algorithm: CryptoEncryptionAlgorithm = CryptoEncryptionAlgorithm.XCHACHA20_POLY1305
     ): Promise<CryptoExchangeSecrets> {
-        let sharedKey;
-        try {
-            sharedKey = (await SodiumWrapper.ready()).crypto_kx_client_session_keys(
-                templatorKeypair.publicKey.publicKey.buffer,
-                templatorKeypair.privateKey.privateKey.buffer,
-                requestorPublicKey.publicKey.buffer
-            );
-        } catch (e) {
-            throw new CryptoError(CryptoErrorCode.ExchangeKeyDerivation, `${e}`);
-        }
-
-        const secrets = CryptoExchangeSecrets.from({
-            receivingKey: CoreBuffer.from(sharedKey.sharedRx),
-            transmissionKey: CoreBuffer.from(sharedKey.sharedTx),
-            algorithm: algorithm
-        });
-        return secrets;
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 }

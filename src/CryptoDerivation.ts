@@ -1,7 +1,8 @@
-import { CoreBuffer, Encoding, ICoreBuffer } from "./CoreBuffer";
+import { ICoreBuffer } from "./CoreBuffer";
+import { CryptoError } from "./CryptoError";
+import { CryptoErrorCode } from "./CryptoErrorCode";
 import { CryptoEncryptionAlgorithm } from "./encryption/CryptoEncryption";
 import { CryptoSecretKey } from "./encryption/CryptoSecretKey";
-import { SodiumWrapper } from "./SodiumWrapper";
 
 /**
  * The key derivation algorithm to use
@@ -50,11 +51,7 @@ export class CryptoDerivation implements ICryptoDerivation {
             saltedMaster.append(salt);
         }
 
-        const memLimit = 2000;
-
-        const pwhash = (await SodiumWrapper.ready()).crypto_pwhash_str(saltedMaster.buffer, iterations, memLimit);
-        const hashBuffer = CoreBuffer.fromString(pwhash, Encoding.Hex);
-        return CryptoSecretKey.from({ secretKey: hashBuffer, algorithm: keyAlgorithm });
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 
     public static async deriveKeyFromBase(
@@ -80,12 +77,6 @@ export class CryptoDerivation implements ICryptoDerivation {
             default:
                 throw new Error("KeyAlgorithm not supported.");
         }
-        const subkey = (await SodiumWrapper.ready()).crypto_kdf_derive_from_key(
-            keyLength,
-            keyId,
-            context,
-            baseKey.buffer
-        );
-        return CryptoSecretKey.from({ secretKey: CoreBuffer.fromObject(subkey), algorithm: keyAlgorithm });
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
 }

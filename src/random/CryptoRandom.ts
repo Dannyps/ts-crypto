@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from "uuid";
 import { CoreBuffer } from "../CoreBuffer";
 import { CryptoError } from "../CryptoError";
 import { CryptoErrorCode } from "../CryptoErrorCode";
-import { SodiumWrapper } from "../SodiumWrapper";
 
 export enum CryptoRandomCharacterRange {
     Digit = "0123456789",
@@ -29,16 +28,7 @@ export interface CryptoRandomCharacterBucket {
 
 export class CryptoRandom {
     public static async bytes(length: number): Promise<CoreBuffer> {
-        const useLength = Math.floor(length);
-        if (useLength <= 0) {
-            throw new CryptoError(
-                CryptoErrorCode.WrongLength,
-                "The length of the created random buffer must be positive."
-            );
-        }
-
-        const randomBytes = (await SodiumWrapper.ready()).randombytes_buf(useLength);
-        return new CoreBuffer(randomBytes);
+        throw new CryptoError(CryptoErrorCode.NotYetImplemented);
     }
     public static async int(length: number): Promise<number> {
         const useLength = Math.floor(length);
