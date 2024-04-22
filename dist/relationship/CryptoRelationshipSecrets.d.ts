@@ -1,0 +1,57 @@
+import { ISerializable } from "@js-soft/ts-serval";
+import { CoreBuffer } from "../CoreBuffer";
+import { CryptoSerializable } from "../CryptoSerializable";
+import { CryptoCipher } from "../encryption/CryptoCipher";
+import { CryptoSecretKey, ICryptoSecretKey } from "../encryption/CryptoSecretKey";
+import { CryptoExchangeKeypair, ICryptoExchangeKeypair } from "../exchange/CryptoExchangeKeypair";
+import { CryptoExchangePublicKey, ICryptoExchangePublicKey } from "../exchange/CryptoExchangePublicKey";
+import { CryptoHashAlgorithm } from "../hash/CryptoHash";
+import { CryptoSignature } from "../signature/CryptoSignature";
+import { CryptoSignatureKeypair, ICryptoSignatureKeypair } from "../signature/CryptoSignatureKeypair";
+import { CryptoSignaturePublicKey, ICryptoSignaturePublicKey } from "../signature/CryptoSignaturePublicKey";
+import { ICryptoPrivateState } from "../state/CryptoPrivateState";
+import { CryptoPrivateStateReceive } from "../state/CryptoPrivateStateReceive";
+import { CryptoPrivateStateTransmit } from "../state/CryptoPrivateStateTransmit";
+import { CryptoRelationshipPublicRequest } from "./CryptoRelationshipPublicRequest";
+import { CryptoRelationshipPublicResponse } from "./CryptoRelationshipPublicResponse";
+import { CryptoRelationshipRequestSecrets } from "./CryptoRelationshipRequestSecrets";
+import { CryptoRelationshipType } from "./CryptoRelationshipType";
+export interface ICryptoRelationshipSecrets extends ISerializable {
+    id?: string;
+    type: CryptoRelationshipType;
+    exchangeKeypair: ICryptoExchangeKeypair;
+    signatureKeypair: ICryptoSignatureKeypair;
+    transmitState: ICryptoPrivateState;
+    receiveState: ICryptoPrivateState;
+    peerExchangeKey: ICryptoExchangePublicKey;
+    peerSignatureKey: ICryptoSignaturePublicKey;
+    peerTemplateKey: ICryptoExchangePublicKey;
+    peerIdentityKey?: ICryptoSignaturePublicKey;
+    requestSecretKey: ICryptoSecretKey;
+}
+export declare class CryptoRelationshipSecrets extends CryptoSerializable implements ICryptoRelationshipSecrets {
+    id?: string;
+    type: CryptoRelationshipType;
+    exchangeKeypair: CryptoExchangeKeypair;
+    signatureKeypair: CryptoSignatureKeypair;
+    transmitState: CryptoPrivateStateTransmit;
+    receiveState: CryptoPrivateStateReceive;
+    peerExchangeKey: CryptoExchangePublicKey;
+    peerSignatureKey: CryptoSignaturePublicKey;
+    peerTemplateKey: CryptoExchangePublicKey;
+    peerIdentityKey?: CryptoSignaturePublicKey;
+    requestSecretKey: CryptoSecretKey;
+    static from(value: ICryptoRelationshipSecrets): CryptoRelationshipSecrets;
+    sign(content: CoreBuffer, algorithm?: CryptoHashAlgorithm): Promise<CryptoSignature>;
+    verifyOwn(content: CoreBuffer, signature: CryptoSignature): Promise<boolean>;
+    verifyPeer(content: CoreBuffer, signature: CryptoSignature): Promise<boolean>;
+    verifyPeerIdentity(content: CoreBuffer, signature: CryptoSignature): Promise<boolean>;
+    encrypt(content: CoreBuffer): Promise<CryptoCipher>;
+    decryptOwn(cipher: CryptoCipher): Promise<CoreBuffer>;
+    decryptPeer(cipher: CryptoCipher, omitCounterCheck?: boolean): Promise<CoreBuffer>;
+    decryptRequest(cipher: CryptoCipher): Promise<CoreBuffer>;
+    toPublicResponse(): CryptoRelationshipPublicResponse;
+    static fromRelationshipResponse(response: CryptoRelationshipPublicResponse, request: CryptoRelationshipRequestSecrets): Promise<CryptoRelationshipSecrets>;
+    static fromRelationshipRequest(request: CryptoRelationshipPublicRequest, templateExchangeKeypair: CryptoExchangeKeypair): Promise<CryptoRelationshipSecrets>;
+    static fromPeerNonce(peerExchangeKey: CryptoExchangePublicKey, peerTemplateKey: CryptoExchangePublicKey, peerSignatureKey: CryptoSignaturePublicKey, peerGeneratedNonce: CoreBuffer, templateExchangeKeypair: CryptoExchangeKeypair, peerIdentityKey?: CryptoSignaturePublicKey, peerType?: CryptoRelationshipType): Promise<CryptoRelationshipSecrets>;
+}

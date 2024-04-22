@@ -1,0 +1,1 @@
+{"version":3,"file":"buildInformation.js","sourceRoot":"","sources":["../src/buildInformation.ts"],"names":[],"mappings":";;;AAAA,kDAAgF;AAEnE,QAAA,gBAAgB,GAAG;IAC5B,OAAO,EAAE,aAAa;IACtB,KAAK,EAAE,WAAW;IAClB,IAAI,EAAE,UAAU;IAChB,MAAM,EAAE,YAAY;IACpB,YAAY,EAAE,kBAAkB;IAChC,SAAS,EAAE;QACP,MAAM,EAAE,4BAAsB;KACjC;CACJ,CAAC"}
